@@ -1,0 +1,11 @@
+{
+  "text_launder_clean_content_auc": 0.8423260656540912,
+  "text_launder_full_content_auc": 0.7853304140127388,
+  "text_launder_full_behav_auc": 0.9809338253307203,
+  "text_launder_full_fusion_auc": 0.9836362383635473,
+  "delong_behavioral_vs_content_p": 0.0,
+  "delong_fusion_vs_behavioral_p": 0.0076326262583858995,
+  "brier_behav": 0.054987138508371385,
+  "brier_content": 0.15501353528471667,
+  "ablation_max_drop_family": "Without age_rates"
+}
