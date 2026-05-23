@@ -3,9 +3,6 @@
 Research paper bundle for submission to the Journal of Online Trust and Safety (primary) or Cybersecurity / EPJ Data Science (secondary).
 
 ## Files
-
-- `manuscript.docx` — Final manuscript, ready for journal submission (Times New Roman 12pt, ~6,500 words, 9 tables, 5 figures, 20 pages)
-- `manuscript_preview.pdf` — Rendered preview for QA
 - `code/` — All analysis and document-generation scripts
 - `results/` — All 10 result CSVs plus summary JSONs
 - `figures/` — All 5 figures as standalone PNGs
