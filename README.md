@@ -1,63 +1,88 @@
 # Account-history features for social bot detection in the era of large language models
 
-Research paper bundle for submission to the Journal of Online Trust and Safety (primary) or Cybersecurity / EPJ Data Science (secondary).
+Code, result tables, and figures accompanying the paper of the same title (Katyal 2026).
 
-## Files
-- `code/` — All analysis and document-generation scripts
-- `results/` — All 10 result CSVs plus summary JSONs
-- `figures/` — All 5 figures as standalone PNGs
+The paper evaluates whether account-history features (account age, follower and friend counts, profile completeness, screen-name structure) can substitute for content features in social bot detection when bot operators use language models to launder their text. On a publicly redistributed corpus of 2,432 labeled Twitter accounts, a random forest using only behavioral features achieves ROC-AUC 0.977 in five-fold cross-validation, against 0.830 for a content-only baseline. Behavioral performance is invariant under realistic text rewriting; content performance degrades from AUC 0.842 to 0.785.
+
+## Repository contents
+
+```
+code/      Five scripts (Python + Node.js) that reproduce the full analysis
+results/   Ten result tables (CSV) and two summary files (JSON)
+figures/   Five paper figures (PNG)
+```
 
 ## Headline results
 
-| Model | ROC-AUC (5-fold CV) | Brier | FPR | FNR |
-|---|---|---|---|---|
-| RF-Content | 0.830 (0.017) | 0.155 | 0.130 | 0.322 |
-| RF-Behavioral | 0.977 (0.003) | 0.055 | 0.034 | 0.118 |
-| RF-Fusion | **0.981 (0.003)** | 0.050 | 0.022 | 0.102 |
+| Model            | ROC-AUC (5-fold CV) | Brier | FPR   | FNR   |
+| ---------------- | ------------------- | ----- | ----- | ----- |
+| RF-Content       | 0.830 (0.017)       | 0.155 | 0.130 | 0.322 |
+| RF-Behavioral    | 0.977 (0.003)       | 0.055 | 0.034 | 0.118 |
+| RF-Fusion        | **0.981 (0.003)**   | 0.050 | 0.022 | 0.102 |
 
-**DeLong's test (paired AUC):**
-- Behavioral vs Content: z = 9.36, p < 0.001
-- Fusion vs Behavioral: z = 2.67, p = 0.008 (Δ AUC = 0.003)
+DeLong's test for paired AUC on the held-out test split:
 
-**Adversarial robustness (text-rewriting, severity 1.0):**
-- Content: AUC 0.842 → 0.785
-- Behavioral: 0.981 → 0.981 (invariant)
-- Fusion: 0.984 → 0.984 (essentially invariant)
+* Behavioral vs Content: z = 9.36, p < 0.001
+* Fusion vs Behavioral: z = 2.67, p = 0.008 (difference in AUC: 0.003)
 
-**Adversarial robustness (feature-space, upper bound):**
-- Content: AUC 0.842 → 0.466 (below chance)
-- Behavioral: 0.981 → 0.981 (invariant)
+Adversarial robustness, text-rewriting protocol at severity 1.0:
+
+* Content: AUC 0.842 to 0.785
+* Behavioral: 0.981 to 0.981 (invariant)
+* Fusion: 0.984 to 0.984 (essentially invariant)
+
+Adversarial robustness, feature-space protocol (upper bound on attack strength):
+
+* Content: AUC 0.842 to 0.466 (below chance)
+* Behavioral: 0.981 to 0.981 (invariant)
 
 ## Reproducing the analysis
 
+Dependencies:
+
+* Python 3.9+ with pandas, scikit-learn, scipy, matplotlib, seaborn
+* Internet access on first run, to download the dataset from GitHub
+
+The two analysis scripts are independent and can be run in either order:
+
 ```bash
 cd code/
-python3 run_analysis.py     # Tables 1-4, Figures 1-4, TwiBot-20 scoring
+python3 run_analysis.py     # Tables 1-4, Figures 1-4, TwiBot-20 cross-dataset scoring
 python3 run_extended.py     # Tables 5-10, Figure 5 (calibration)
-python3 regen_figures.py    # Regenerate figures with paper-clean titles
-node build_paper.js         # Generate manuscript.docx
 ```
 
-Dependencies: Python 3 with pandas, scikit-learn, scipy, matplotlib, seaborn; Node.js with the `docx` package.
+`features.py` is imported by both and defines the 36-feature engineering pipeline. `regen_figures.py` regenerates the figures with the titles used in the paper. `build_paper.js` is the Node.js script that builds the manuscript itself from the result CSVs and is included for completeness; it is not needed to reproduce the analysis.
 
 ## Data sources
 
-- **Primary (labeled):** `jubins/MachineLearning-Detecting-Twitter-Bots` on GitHub. 2,432 unique accounts, 43% bots, manual annotation. URL: https://raw.githubusercontent.com/jubins/MachineLearning-Detecting-Twitter-Bots/master/FinalProjectAndCode/kaggle_data/training_data_2_csv_UTF.csv
-- **Secondary (unlabeled, cross-dataset):** `BunsenFeng/TwiBot-20` public sample on GitHub. 100 accounts. URL: https://raw.githubusercontent.com/BunsenFeng/TwiBot-20/main/TwiBot-20_sample.json
+Primary dataset, labeled: 2,432 Twitter accounts, 43% bots, manually annotated. Downloaded from the `jubins/MachineLearning-Detecting-Twitter-Bots` repository on GitHub. Direct URL:
 
-## Submission notes
+```
+https://raw.githubusercontent.com/jubins/MachineLearning-Detecting-Twitter-Bots/master/FinalProjectAndCode/kaggle_data/training_data_2_csv_UTF.csv
+```
 
-Primary target: **Journal of Online Trust and Safety** (https://tsjournal.org). Open access, no APC, fast review cycles, indexed in Google Scholar, growing influence in the trust-and-safety research community. The paper's framing aligns with JOTS's stated scope.
+Secondary dataset, unlabeled, used for qualitative cross-dataset validation: the 100-account public sample of TwiBot-20 (Feng et al. 2021). Downloaded from the `BunsenFeng/TwiBot-20` repository on GitHub.
 
-Backup targets:
-1. **Cybersecurity** (Springer Nature, indexed in SCIE, Q2)
-2. **EPJ Data Science** (Springer Nature, indexed in SCIE, Q1)
-3. **First Monday** (open access, accepted Ferrara's 2023 piece on the same topic)
+The full labeled TwiBot-20 and TwiBot-22 benchmarks are gated behind an application process administered by the dataset maintainers and are not required to reproduce the results in this repository.
 
-## Author actions before submission
+## Citation
 
-1. Fill in `[Author Name]`, `[Affiliation]`, and `[email]` on page 1
-2. Replace `[Acknowledgments to be added upon de-anonymization.]` with real acknowledgments at camera-ready stage
-3. Verify ORCID is registered
-4. Deposit code in a public repository (GitHub + Zenodo for a DOI)
-5. Pre-print to arXiv (cs.SI or cs.CR) on the day of submission to maximize citation accumulation in the review window
+If you use this code or build on the analysis, please cite the paper:
+
+```
+Katyal, G. 2026. Account-history features for social bot detection in the era
+of large language models. [Journal of Online Trust and Safety, under review].
+Preprint and code: [arXiv ID to be added on preprint posting].
+```
+
+A Zenodo DOI for this code release is available via the release tag on this repository.
+
+## License
+
+MIT License. See LICENSE file.
+
+## Contact
+
+Gaurang Katyal, Independent Researcher
+gaurang.katyal@gmail.com
+ORCID: 0009-0001-0850-1673
