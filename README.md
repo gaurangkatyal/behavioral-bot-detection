@@ -1,5 +1,5 @@
 # Account-history features for social bot detection in the era of large language models
-
+Paper: [katyal_2026_bot_detection.pdf](katyal_2026_bot_detection.pdf) (also on [SSRN](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=6821398))
 Code, result tables, and figures accompanying the paper of the same title (Katyal 2026).
 
 The paper evaluates whether account-history features (account age, follower and friend counts, profile completeness, screen-name structure) can substitute for content features in social bot detection when bot operators use language models to launder their text. On a publicly redistributed corpus of 2,432 labeled Twitter accounts, a random forest using only behavioral features achieves ROC-AUC 0.977 in five-fold cross-validation, against 0.830 for a content-only baseline. Behavioral performance is invariant under realistic text rewriting; content performance degrades from AUC 0.842 to 0.785.
