@@ -1,4 +1,3 @@
-// Manuscript v2: prose rewritten to avoid LLM stylistic tells.
 // Output: <repo>/manuscript.docx
 
 const fs = require('fs');
