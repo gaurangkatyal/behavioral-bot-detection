@@ -41,7 +41,8 @@ Adversarial robustness, feature-space protocol (upper bound on attack strength):
 Dependencies:
 
 * Python 3.9+ with pandas, scikit-learn, scipy, matplotlib, seaborn
-* Internet access on first run, to download the dataset from GitHub
+* Internet access on first run: both datasets are downloaded automatically into a
+  local `data/` directory (git-ignored), so no manual data setup is required
 
 The two analysis scripts are independent and can be run in either order:
 

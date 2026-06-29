@@ -11,11 +11,47 @@ Three feature families:
      the baselines that LLM-laundered text can defeat.
 """
 
+import os
 import re
 import math
+import urllib.request
 import numpy as np
 import pandas as pd
 from datetime import datetime, timezone
+
+# Repo-relative paths so the analysis runs from a fresh clone (no absolute paths).
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DATA = os.path.join(ROOT, "data")
+OUT = os.path.join(ROOT, "results")
+
+# Public upstream sources (see README). Downloaded into data/ on first run.
+DATASET1_URL = (
+    "https://raw.githubusercontent.com/jubins/MachineLearning-Detecting-Twitter-Bots/"
+    "master/FinalProjectAndCode/kaggle_data/training_data_2_csv_UTF.csv"
+)
+DATASET1_CSV = os.path.join(DATA, "training_data_2_csv_UTF.csv")
+TWIBOT20_URL = (
+    "https://raw.githubusercontent.com/BunsenFeng/TwiBot-20/master/TwiBot-20_sample.json"
+)
+TWIBOT20_JSON = os.path.join(DATA, "twibot20_sample.json")
+
+
+def _download(url, dest):
+    if not os.path.exists(dest):
+        os.makedirs(os.path.dirname(dest), exist_ok=True)
+        print(f"Downloading {os.path.basename(dest)} from {url}")
+        urllib.request.urlretrieve(url, dest)
+    return dest
+
+
+def ensure_dataset1():
+    """Local path to the labeled Dataset-1 CSV; downloads it on first run."""
+    return _download(DATASET1_URL, DATASET1_CSV)
+
+
+def ensure_twibot20():
+    """Local path to the public 100-account TwiBot-20 sample; downloads on first run."""
+    return _download(TWIBOT20_URL, TWIBOT20_JSON)
 
 
 def parse_twitter_date(s):

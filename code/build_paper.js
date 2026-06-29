@@ -1,11 +1,13 @@
 // Manuscript v2: prose rewritten to avoid LLM stylistic tells.
-// Output: /home/claude/paper/manuscript.docx
+// Output: <repo>/manuscript.docx
 
 const fs = require('fs');
 const {
   Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell, ImageRun,
   AlignmentType, HeadingLevel, BorderStyle, WidthType, ShadingType,
 } = require('docx');
+
+const BASE = __dirname + '/..';  // repo root, relative
 
 const FONT = "Times New Roman";
 const SIZE_BODY = 24;     // 12pt
@@ -94,16 +96,16 @@ function caption(text) {
   });
 }
 
-const r1 = readCSV('/home/claude/paper/results/table1_descriptive_stats.csv');
-const r2 = readCSV('/home/claude/paper/results/table2_classifier_performance.csv');
-const r3 = readCSV('/home/claude/paper/results/table3_adversarial_robustness.csv');
-const r4 = readCSV('/home/claude/paper/results/table4_feature_importance.csv');
-const r5 = readCSV('/home/claude/paper/results/table5_text_laundering.csv');
-const r6 = readCSV('/home/claude/paper/results/table6_delong.csv');
-const r7 = readCSV('/home/claude/paper/results/table7_calibration.csv');
-const r8 = readCSV('/home/claude/paper/results/table8_confusion.csv');
-const r9 = readCSV('/home/claude/paper/results/table9_ablation.csv');
-const r10 = readCSV('/home/claude/paper/results/table10_subgroup.csv');
+const r1 = readCSV(`${BASE}/results/table1_descriptive_stats.csv`);
+const r2 = readCSV(`${BASE}/results/table2_classifier_performance.csv`);
+const r3 = readCSV(`${BASE}/results/table3_adversarial_robustness.csv`);
+const r4 = readCSV(`${BASE}/results/table4_feature_importance.csv`);
+const r5 = readCSV(`${BASE}/results/table5_text_laundering.csv`);
+const r6 = readCSV(`${BASE}/results/table6_delong.csv`);
+const r7 = readCSV(`${BASE}/results/table7_calibration.csv`);
+const r8 = readCSV(`${BASE}/results/table8_confusion.csv`);
+const r9 = readCSV(`${BASE}/results/table9_ablation.csv`);
+const r10 = readCSV(`${BASE}/results/table10_subgroup.csv`);
 
 // ---- Tables ----
 const C_T1 = [2400, 1300, 1300, 1300, 1300, 1200];
@@ -419,7 +421,7 @@ ch.push(p("Two entries in Table 1 deserve a note. The raw statuses_per_day varia
 ch.push(p("Table 1. Class-conditional descriptive statistics for twelve representative behavioral features (n = 2,432). Bolded Cohen's d values indicate effect sizes |d| ≥ 0.8.", { italics:true, spaceAfter:60 }));
 ch.push(table1);
 ch.push(p(""));
-ch.push(image('/home/claude/paper/results/fig1_feature_distributions.png', 600, 340));
+ch.push(image(`${BASE}/results/fig1_feature_distributions.png`, 600, 340));
 ch.push(caption("Figure 1. Marginal distributions of selected content-agnostic features by class. Note the clear separation in log followers, account age, and the use of default-profile elements."));
 
 ch.push(h2("6.2 Classifier performance"));
@@ -428,7 +430,7 @@ ch.push(p("Table 2 reports five-fold cross-validated performance for all eight c
 ch.push(p("Table 2. Cross-validated performance on Dataset 1 (5-fold stratified). Standard deviations in parentheses. RF-Fusion in bold.", { italics:true, spaceAfter:60 }));
 ch.push(table2);
 ch.push(p(""));
-ch.push(image('/home/claude/paper/results/fig2_roc_curves.png', 420, 380));
+ch.push(image(`${BASE}/results/fig2_roc_curves.png`, 420, 380));
 ch.push(caption("Figure 2. ROC curves for the three random-forest configurations under five-fold cross-validation. The behavioral and fusion curves are visually indistinguishable across the operating range."));
 
 ch.push(p("The behavioral-versus-content gap is statistically significant by DeLong's test on the held-out 30% test split (z = 9.36, p < 0.001). The fusion-versus-behavioral gap is also significant (z = 2.67, p = 0.008), but the magnitude is small (Δ AUC = 0.0035). For deployment purposes the two are interchangeable; for understanding which features matter, the behavioral-only result is the interesting one."));
@@ -442,7 +444,7 @@ ch.push(p("Table 4 reports the Brier score and the confusion matrix at threshold
 ch.push(p("Table 4. Brier scores and confusion matrices at threshold 0.5 on the held-out test set (n = 730).", { italics:true, spaceAfter:60 }));
 ch.push(table4);
 ch.push(p(""));
-ch.push(image('/home/claude/paper/results/fig5_calibration.png', 420, 380));
+ch.push(image(`${BASE}/results/fig5_calibration.png`, 420, 380));
 ch.push(caption("Figure 3. Reliability diagrams for the three random-forest configurations on the held-out test set. The behavioral and fusion classifiers track the diagonal well; the content classifier is over-confident in the middle of the score range."));
 
 ch.push(h2("6.4 Adversarial robustness under text rewriting"));
@@ -451,7 +453,7 @@ ch.push(p("Table 5 reports the result of the text-rewriting protocol described i
 ch.push(p("Table 5. Realistic text-rewriting adversarial protocol. Bot tweets are rewritten to match human URL, hashtag, mention, and casing statistics with probability s.", { italics:true, spaceAfter:60 }));
 ch.push(table5);
 ch.push(p(""));
-ch.push(image('/home/claude/paper/results/fig3_adversarial_degradation.png', 620, 240));
+ch.push(image(`${BASE}/results/fig3_adversarial_degradation.png`, 620, 240));
 ch.push(caption("Figure 4. Classifier ROC-AUC and F1 as a function of feature-space laundering severity (upper bound on attack strength). The behavioral and fusion classifiers are invariant; the content classifier collapses below chance."));
 
 ch.push(p("The 0.06 drop in content-classifier AUC under realistic text rewriting is a lower bound on the threat from genuinely LLM-driven attackers, who can also rewrite vocabulary, phrasing, and structure. To approximate the upper bound, we run the second adversarial protocol described in Section 5.4, which directly replaces content feature values with samples from the human distribution. Under that protocol (Table 6), the content classifier's ROC-AUC falls from 0.842 to 0.466, well below chance, while the behavioral classifier holds at 0.981. The true degradation under an LLM-driven attack is somewhere in the interval between the two protocols' s = 1.0 results."));
@@ -480,7 +482,7 @@ ch.push(p("Table 9 lists the top fifteen features by random-forest Gini importan
 ch.push(p("Table 9. Top fifteen features by RF-Fusion Gini importance.", { italics:true, spaceAfter:60 }));
 ch.push(table9);
 ch.push(p(""));
-ch.push(image('/home/claude/paper/results/fig4_feature_importance.png', 460, 380));
+ch.push(image(`${BASE}/results/fig4_feature_importance.png`, 460, 380));
 ch.push(caption("Figure 5. Top fifteen features by Gini importance. Behavioral features (blue) occupy positions 1-12; the first content feature (red) appears at position 13."));
 
 ch.push(h2("6.8 Cross-dataset evaluation on TwiBot-20"));
@@ -591,7 +593,7 @@ const doc = new Document({
 });
 
 Packer.toBuffer(doc).then(buf => {
-  fs.writeFileSync('/home/claude/paper/manuscript.docx', buf);
-  console.log('Wrote /home/claude/paper/manuscript.docx');
+  fs.writeFileSync(`${BASE}/manuscript.docx`, buf);
+  console.log(`Wrote ${BASE}/manuscript.docx`);
   console.log('Size:', buf.length, 'bytes');
 });

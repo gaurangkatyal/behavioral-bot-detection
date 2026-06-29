@@ -28,17 +28,17 @@ from sklearn.metrics import (roc_auc_score, brier_score_loss, f1_score,
 from sklearn.calibration import calibration_curve
 from scipy import stats
 
-from features import engineer_all, engineer_behavioral_features, engineer_content_features
+from features import (engineer_all, engineer_behavioral_features, engineer_content_features,
+                      OUT, ensure_dataset1)
 
 RNG = 42
 np.random.seed(RNG)
-OUT = '/home/claude/paper/results'
 os.makedirs(OUT, exist_ok=True)
 
 # ---------------------------------------------------------------
 # Load + feature-engineer (reuse Dataset 1)
 # ---------------------------------------------------------------
-df1 = pd.read_csv('/home/claude/paper/data/training_data_2_csv_UTF.csv',
+df1 = pd.read_csv(ensure_dataset1(),
                   encoding='utf-8', on_bad_lines='skip', low_memory=False)
 df1 = df1.dropna(subset=['bot']).copy()
 df1['bot'] = df1['bot'].astype(int)

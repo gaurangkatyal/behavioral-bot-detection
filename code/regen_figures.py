@@ -14,12 +14,12 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import roc_curve, roc_auc_score
 from sklearn.model_selection import StratifiedKFold, cross_val_predict
 from sklearn.ensemble import RandomForestClassifier
-from features import engineer_all
+from features import engineer_all, OUT, ensure_dataset1
 
 RNG = 42
-OUT = '/home/claude/paper/results'
+os.makedirs(OUT, exist_ok=True)
 
-df = pd.read_csv('/home/claude/paper/data/training_data_2_csv_UTF.csv',
+df = pd.read_csv(ensure_dataset1(),
                  encoding='utf-8', on_bad_lines='skip', low_memory=False)
 df = df.dropna(subset=['bot']).copy()
 df['bot'] = df['bot'].astype(int)

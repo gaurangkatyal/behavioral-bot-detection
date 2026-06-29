@@ -209,6 +209,12 @@ tempCodeRunnerFile.py
 # PyPI configuration file
 .pypirc
 
+# Datasets fetched on first run (not redistributed here; see README for sources)
+data/
+
+# Figures are regenerated into results/ by the scripts; canonical copies live in figures/
+results/*.png
+
 # Marimo
 marimo/_static/
 marimo/_lsp/
