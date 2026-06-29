@@ -33,12 +33,12 @@ from sklearn.metrics import (roc_auc_score, roc_curve, f1_score, precision_score
                              recall_score, accuracy_score, confusion_matrix,
                              classification_report)
 
-from features import engineer_all, engineer_behavioral_features
+from features import (engineer_all, engineer_behavioral_features,
+                      OUT, ensure_dataset1, ensure_twibot20)
 
 RNG = 42
 np.random.seed(RNG)
 
-OUT = '/home/claude/paper/results'
 os.makedirs(OUT, exist_ok=True)
 
 
@@ -50,7 +50,7 @@ print("=" * 70)
 print("LOADING DATASET 1: Twitter Bot Accounts (labeled)")
 print("=" * 70)
 
-df1 = pd.read_csv('/home/claude/paper/data/training_data_2_csv_UTF.csv',
+df1 = pd.read_csv(ensure_dataset1(),
                   encoding='utf-8', on_bad_lines='skip', low_memory=False)
 
 # Clean labels & dedupe
@@ -378,7 +378,7 @@ print("\n" + "=" * 70)
 print("Cross-dataset generalization: TwiBot-20 sample (unlabeled)")
 print("=" * 70)
 
-with open('/home/claude/paper/data/twibot20_sample.json') as f:
+with open(ensure_twibot20()) as f:
     tb20 = json.load(f)
 
 # Convert TwiBot-20 profile dicts to a DataFrame matching dataset-1 columns
