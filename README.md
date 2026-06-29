@@ -54,6 +54,17 @@ python3 run_extended.py     # Tables 5-10, Figure 5 (calibration)
 
 `features.py` is imported by both and defines the 36-feature engineering pipeline. `regen_figures.py` regenerates the figures with the titles used in the paper. `build_paper.js` is the Node.js script that builds the manuscript itself from the result CSVs and is included for completeness; it is not needed to reproduce the analysis.
 
+### Optional: real-LLM adversarial attack
+
+`run_llm_attack.py` re-runs the text-laundering experiment with an actual language model in place of the deterministic regex proxy used for Table 5: each test tweet is rewritten by an LLM to read like a natural human post, the content features are recomputed, and the three classifiers are re-scored on the same 70/30 split and severity sweep, writing `results/table11_llm_attack.csv`. This makes the LLM-attack curve directly comparable to the regex curve in Table 5.
+
+It needs an API key — `ANTHROPIC_API_KEY` (default, Claude Haiku) or `GEMINI_API_KEY` with `--provider gemini` — and the `anthropic` (or `google-genai`) package. Rewrites are cached under `data/`, so re-runs are free and resumable. Use `--dry-run` to exercise the pipeline with an identity rewrite and no API key.
+
+```bash
+python3 run_llm_attack.py                    # Claude Haiku
+python3 run_llm_attack.py --dry-run          # pipeline check, no API key
+```
+
 ## Data sources
 
 Primary dataset, labeled: 2,432 Twitter accounts, 43% bots, manually annotated. Downloaded from the `jubins/MachineLearning-Detecting-Twitter-Bots` repository on GitHub. Direct URL:
